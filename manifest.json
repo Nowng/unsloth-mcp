@@ -1,0 +1,7 @@
+{
+  "type": "plugin",
+  "name": "unsloth-mcp",
+  "owner": "hoonowng",
+  "runner": "node",
+  "description": "LM Studio Plugin for Unsloth - 35 MCP tools for LLM fine-tuning, model optimization, GPU management, and knowledge capture pipeline."
+}

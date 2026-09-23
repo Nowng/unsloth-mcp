@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Dashboard - Knowledge Capture</title>
+  <style>
+    :root {
+      --bg-primary: #0f0f1a;
+      --bg-secondary: #1a1a2e;
+      --bg-card: #252540;
+      --accent: #6c63ff;
+      --accent-hover: #5a52e0;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger: #ef4444;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .header a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .section {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chart-container {
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      padding: 20px 0;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 60px;
+      background: var(--accent);
+      border-radius: 4px 4px 0 0;
+      min-height: 4px;
+      transition: height 0.3s ease;
+    }
+
+    .bar-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+      word-break: break-all;
+      max-width: 60px;
+    }
+
+    .quality-meter {
+      height: 20px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .quality-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .quality-fill.high { background: var(--success); }
+    .quality-fill.medium { background: var(--warning); }
+    .quality-fill.low { background: var(--danger); }
+
+    .readiness-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+    }
+
+    .readiness-item {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .readiness-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .readiness-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .readiness-status.ready { background: var(--success); color: #000; }
+    .readiness-status.needs-work { background: var(--warning); color: #000; }
+    .readiness-status.not-ready { background: var(--danger); }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: #3a3a5a;
+    }
+
+    .export-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .export-option {
+      background: var(--bg-card);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .export-option:hover, .export-option.selected {
+      border-color: var(--accent);
+    }
+
+    .export-option h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .export-option p {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .progress-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--bg-card);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .recent-activity {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-card);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-title {
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .activity-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-value {
+        font-size: 28px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Training Dashboard</h1>
+    <a href="/">← Back to Capture</a>
+  </div>
+
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" id="total-entries">0</div>
+      <div class="stat-label">Knowledge Entries</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="total-pairs">0</div>
+      <div class="stat-label">Training Pairs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="avg-quality">0%</div>
+      <div class="stat-label">Avg Quality Score</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="categories-count">0</div>
+      <div class="stat-label">Categories</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">📊 Category Distribution</h2>
+    <div class="chart-container" id="category-chart"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">✅ Training Readiness</h2>
+    <div class="quality-meter">
+      <div class="quality-fill" id="quality-fill" style="width: 0%"></div>
+    </div>
+    <div class="readiness-grid" id="readiness-grid"></div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">📤 Export Dataset</h2>
+    <div class="export-options" id="export-options">
+      <div class="export-option selected" data-format="alpaca">
+        <h3>Alpaca</h3>
+        <p>Standard instruction format. Works with most fine-tuning scripts.</p>
+      </div>
+      <div class="export-option" data-format="sharegpt">
+        <h3>ShareGPT</h3>
+        <p>Conversation format. Great for chat models.</p>
+      </div>
+      <div class="export-option" data-format="chatml">
+        <h3>ChatML</h3>
+        <p>OpenAI-style messages. Compatible with many frameworks.</p>
+      </div>
+      <div class="export-option" data-format="huggingface">
+        <h3>Hugging Face</h3>
+        <p>JSONL format ready for HF datasets library.</p>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="export-btn">Export Dataset</button>
+      <button class="btn btn-secondary" id="generate-all-btn">Generate All Training Pairs</button>
+    </div>
+    <div class="progress-container" id="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-text" id="progress-text">Processing...</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">📚 Recent Activity</h2>
+    <div class="recent-activity" id="recent-activity"></div>
+  </div>
+
+  <script>
+    let selectedFormat = 'alpaca';
+    let stats = null;
+
+    // Load stats on page load
+    async function loadStats() {
+      try {
+        const response = await fetch('/api/stats');
+        stats = await response.json();
+        updateDashboard(stats);
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      }
+    }
+
+    function updateDashboard(data) {
+      // Update stat cards
+      document.getElementById('total-entries').textContent = data.total_entries || 0;
+      document.getElementById('total-pairs').textContent = data.total_pairs || 0;
+      document.getElementById('avg-quality').textContent = Math.round(data.average_quality || 0) + '%';
+      document.getElementById('categories-count').textContent = Object.keys(data.by_category || {}).length;
+
+      // Update category chart
+      const chartContainer = document.getElementById('category-chart');
+      chartContainer.innerHTML = '';
+
+      const categories = data.by_category || {};
+      const maxCount = Math.max(...Object.values(categories), 1);
+
+      Object.entries(categories).forEach(([cat, count]) => {
+        const height = (count / maxCount) * 150;
+        const group = document.createElement('div');
+        group.className = 'bar-group';
+        group.innerHTML = `
+          <div class="bar" style="height: ${height}px"></div>
+          <div class="bar-label">${cat.replace(/_/g, ' ')}</div>
+        `;
+        chartContainer.appendChild(group);
+      });
+
+      // Update quality meter
+      const qualityScore = data.average_quality || 0;
+      const qualityFill = document.getElementById('quality-fill');
+      qualityFill.style.width = qualityScore + '%';
+      qualityFill.className = 'quality-fill ' + (qualityScore >= 70 ? 'high' : qualityScore >= 50 ? 'medium' : 'low');
+
+      // Update readiness grid
+      const readinessGrid = document.getElementById('readiness-grid');
+      const minPairsForTraining = 100;
+      const minQualityForTraining = 70;
+
+      const checks = [
+        {
+          icon: '📝',
+          label: 'Entries',
+          ready: (data.total_entries || 0) >= 10,
+          value: `${data.total_entries || 0} entries`
+        },
+        {
+          icon: '🎯',
+          label: 'Training Pairs',
+          ready: (data.total_pairs || 0) >= minPairsForTraining,
+          value: `${data.total_pairs || 0}/${minPairsForTraining} min`
+        },
+        {
+          icon: '⭐',
+          label: 'Quality',
+          ready: qualityScore >= minQualityForTraining,
+          value: `${Math.round(qualityScore)}% avg`
+        },
+        {
+          icon: '📁',
+          label: 'Categories',
+          ready: Object.keys(categories).length >= 3,
+          value: `${Object.keys(categories).length} categories`
+        }
+      ];
+
+      readinessGrid.innerHTML = checks.map(check => `
+        <div class="readiness-item">
+          <div class="readiness-icon">${check.icon}</div>
+          <div class="readiness-status ${check.ready ? 'ready' : 'needs-work'}">
+            ${check.ready ? 'Ready' : 'Needs Work'}
+          </div>
+          <div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary)">
+            ${check.value}
+          </div>
+        </div>
+      `).join('');
+
+      // Load recent entries
+      loadRecentActivity();
+    }
+
+    async function loadRecentActivity() {
+      try {
+        const response = await fetch('/api/entries');
+        const entries = await response.json();
+
+        const activityContainer = document.getElementById('recent-activity');
+        const recentEntries = entries.slice(-10).reverse();
+
+        activityContainer.innerHTML = recentEntries.map(entry => `
+          <div class="activity-item">
+            <div class="activity-icon">📖</div>
+            <div class="activity-content">
+              <div class="activity-title">${entry.source_book_title || 'Untitled'}</div>
+              <div class="activity-meta">
+                ${entry.category} • ${new Date(entry.created_at).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+        `).join('') || '<p style="color: var(--text-secondary)">No entries yet. Start capturing!</p>';
+      } catch (error) {
+        console.error('Failed to load activity:', error);
+      }
+    }
+
+    // Export format selection
+    document.querySelectorAll('.export-option').forEach(option => {
+      option.addEventListener('click', () => {
+        document.querySelectorAll('.export-option').forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        selectedFormat = option.dataset.format;
+      });
+    });
+
+    // Export button
+    document.getElementById('export-btn').addEventListener('click', async () => {
+      try {
+        const response = await fetch(`/api/export?format=${selectedFormat}`);
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `training_data_${selectedFormat}_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+      } catch (error) {
+        alert('Export failed: ' + error.message);
+      }
+    });
+
+    // Generate all training pairs
+    document.getElementById('generate-all-btn').addEventListener('click', async () => {
+      const progressContainer = document.getElementById('progress-container');
+      const progressFill = document.getElementById('progress-fill');
+      const progressText = document.getElementById('progress-text');
+
+      progressContainer.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressText.textContent = 'Loading entries...';
+
+      try {
+        const entriesResponse = await fetch('/api/entries');
+        const entries = await entriesResponse.json();
+
+        let processed = 0;
+        for (const entry of entries) {
+          progressText.textContent = `Processing ${processed + 1}/${entries.length}...`;
+          progressFill.style.width = ((processed / entries.length) * 100) + '%';
+
+          await fetch(`/api/entries/${entry.id}/generate`, { method: 'POST' });
+          processed++;
+        }
+
+        progressFill.style.width = '100%';
+        progressText.textContent = 'Complete! Refreshing stats...';
+
+        setTimeout(() => {
+          progressContainer.style.display = 'none';
+          loadStats();
+        }, 1500);
+      } catch (error) {
+        progressText.textContent = 'Error: ' + error.message;
+      }
+    });
+
+    // Initial load
+    loadStats();
+  </script>
+</body>
+</html>

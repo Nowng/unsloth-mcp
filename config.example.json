@@ -1,0 +1,36 @@
+{
+  "server": {
+    "name": "unsloth-server",
+    "version": "2.0.1",
+    "environment": "production"
+  },
+  "logging": {
+    "level": "info",
+    "filePath": "./logs",
+    "maxSize": 5242880,
+    "maxFiles": 5
+  },
+  "python": {
+    "path": "python",
+    "timeout": 600000,
+    "maxRetries": 2
+  },
+  "limits": {
+    "maxExecutionTime": 600000,
+    "maxFileSize": 104857600,
+    "maxScriptLength": 50000,
+    "maxConcurrentOperations": 3
+  },
+  "cache": {
+    "enabled": true,
+    "ttl": 3600,
+    "maxSize": 1000,
+    "directory": "./.cache"
+  },
+  "security": {
+    "validateInput": true,
+    "sanitizeScripts": true,
+    "allowedPaths": [],
+    "blockedPaths": ["/etc", "/sys", "/proc", "/root"]
+  }
+}

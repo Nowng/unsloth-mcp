@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Capture book photos and build training datasets for AI fine-tuning">
+
+  <title>Knowledge Capture</title>
+
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0f0f1a;
+      --bg-secondary: #1a1a2e;
+      --bg-card: #252540;
+      --accent: #6c63ff;
+      --accent-glow: rgba(108, 99, 255, 0.3);
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0b0;
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger: #f87171;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      padding: 16px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1::before {
+      content: '📚';
+    }
+
+    /* Navigation */
+    .nav {
+      display: flex;
+      gap: 8px;
+      padding: 12px 20px;
+      background: var(--bg-secondary);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .nav button {
+      flex-shrink: 0;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 20px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav button.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* Main content */
+    .main {
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Capture Screen */
+    .capture-zone {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      border: 2px dashed rgba(255,255,255,0.2);
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .capture-zone:hover {
+      border-color: var(--accent);
+      background: rgba(108, 99, 255, 0.1);
+    }
+
+    .capture-zone.dragging {
+      border-color: var(--accent);
+      background: rgba(108, 99, 255, 0.2);
+    }
+
+    .capture-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .capture-text {
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .capture-hint {
+      font-size: 12px;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    #file-input {
+      display: none;
+    }
+
+    /* Preview */
+    .preview-container {
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .preview-container.active {
+      display: block;
+    }
+
+    .preview-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      margin-top: 10px;
+    }
+
+    /* Status */
+    .status {
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .status.active {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status.success {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+
+    .status.error {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+
+    .status.loading {
+      background: rgba(108, 99, 255, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Library Screen */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .entry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .entry-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .entry-card:hover {
+      transform: translateX(4px);
+      border-left: 3px solid var(--accent);
+    }
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .entry-title {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .entry-category {
+      font-size: 11px;
+      padding: 4px 8px;
+      background: var(--accent);
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .entry-preview {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .entry-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    /* Export Screen */
+    .export-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .export-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .export-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .format-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .format-btn {
+      padding: 12px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .format-btn.selected {
+      border-color: var(--accent);
+      background: rgba(108, 99, 255, 0.1);
+    }
+
+    /* Entry Detail Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 200;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: block;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .modal-section {
+      margin-bottom: 20px;
+    }
+
+    .modal-section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      padding: 4px 10px;
+      background: var(--bg-card);
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      .main {
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>Knowledge Capture</h1>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <button class="active" data-screen="capture">Capture</button>
+    <button data-screen="library">Library</button>
+    <button data-screen="export">Export</button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Capture Screen -->
+    <section id="capture" class="screen active">
+      <div id="status" class="status">
+        <div class="spinner"></div>
+        <span id="status-text">Processing...</span>
+      </div>
+
+      <div id="capture-zone" class="capture-zone">
+        <div class="capture-icon">📷</div>
+        <div class="capture-text">Tap to capture or select image</div>
+        <div class="capture-hint">Supports JPG, PNG, WebP up to 10MB</div>
+        <input type="file" id="file-input" accept="image/*" capture="environment">
+      </div>
+
+      <div id="preview-container" class="preview-container">
+        <img id="preview-image" class="preview-image" alt="Preview">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Book Title (optional)</label>
+        <input type="text" id="book-title" class="form-input" placeholder="e.g., Japanese Candlestick Charting">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Author (optional)</label>
+        <input type="text" id="author" class="form-input" placeholder="e.g., Steve Nison">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Chapter (optional)</label>
+        <input type="text" id="chapter" class="form-input" placeholder="e.g., Chapter 5">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Page Numbers (optional)</label>
+        <input type="text" id="page-numbers" class="form-input" placeholder="e.g., 42-43">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="category" class="form-select">
+          <option value="general">Auto-detect</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tags (comma-separated)</label>
+        <input type="text" id="tags" class="form-input" placeholder="e.g., reversal, bullish, hammer">
+      </div>
+
+      <button id="process-btn" class="btn btn-primary" disabled>Process Image</button>
+      <button id="reset-btn" class="btn btn-secondary" style="display: none;">Capture Another</button>
+    </section>
+
+    <!-- Library Screen -->
+    <section id="library" class="screen">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Entries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-pairs">0</div>
+          <div class="stat-label">Training Pairs</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-quality">0</div>
+          <div class="stat-label">Avg Quality</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-categories">0</div>
+          <div class="stat-label">Categories</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <select id="filter-category" class="form-select">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+
+      <div id="entry-list" class="entry-list">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <p>No entries yet. Start capturing!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Export Screen -->
+    <section id="export" class="screen">
+      <div class="export-card">
+        <div class="export-title">Export Training Data</div>
+        <div class="export-desc">Download your knowledge base as training data for fine-tuning.</div>
+
+        <div class="form-label">Format</div>
+        <div class="format-grid">
+          <button class="format-btn selected" data-format="alpaca">Alpaca</button>
+          <button class="format-btn" data-format="sharegpt">ShareGPT</button>
+          <button class="format-btn" data-format="chatml">ChatML</button>
+        </div>
+
+        <button id="export-btn" class="btn btn-primary">Download Training Data</button>
+      </div>
+
+      <div class="export-card">
+        <div class="export-title">Generate Training Pairs</div>
+        <div class="export-desc">Generate Q&A pairs from all entries in your knowledge base.</div>
+        <button id="generate-all-btn" class="btn btn-secondary">Generate All Pairs</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Entry Detail Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Entry Details</h2>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Content loaded dynamically -->
+      </div>
+      <button id="generate-btn" class="btn btn-primary" style="margin-top: 20px;">Generate Training Pairs</button>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let selectedFile = null;
+    let selectedFormat = 'alpaca';
+    let currentEntryId = null;
+    const API_BASE = '';
+
+    // DOM Elements
+    const screens = document.querySelectorAll('.screen');
+    const navButtons = document.querySelectorAll('.nav button');
+    const captureZone = document.getElementById('capture-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const processBtn = document.getElementById('process-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const statusDiv = document.getElementById('status');
+    const statusText = document.getElementById('status-text');
+    const categorySelect = document.getElementById('category');
+    const filterCategory = document.getElementById('filter-category');
+    const entryList = document.getElementById('entry-list');
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modal-body');
+    const modalTitle = document.getElementById('modal-title');
+
+    // Navigation
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const screenId = btn.dataset.screen;
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        screens.forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+
+        if (screenId === 'library') {
+          loadStats();
+          loadEntries();
+        }
+      });
+    });
+
+    // Load categories
+    async function loadCategories() {
+      try {
+        const res = await fetch(`${API_BASE}/api/categories`);
+        const categories = await res.json();
+
+        categories.forEach(cat => {
+          const option1 = document.createElement('option');
+          option1.value = cat.id;
+          option1.textContent = cat.name;
+          categorySelect.appendChild(option1);
+
+          const option2 = document.createElement('option');
+          option2.value = cat.id;
+          option2.textContent = cat.name;
+          filterCategory.appendChild(option2);
+        });
+      } catch (err) {
+        console.error('Failed to load categories:', err);
+      }
+    }
+
+    // File selection
+    captureZone.addEventListener('click', () => fileInput.click());
+
+    captureZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      captureZone.classList.add('dragging');
+    });
+
+    captureZone.addEventListener('dragleave', () => {
+      captureZone.classList.remove('dragging');
+    });
+
+    captureZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      captureZone.classList.remove('dragging');
+      if (e.dataTransfer.files.length) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    function handleFile(file) {
+      if (!file.type.startsWith('image/')) {
+        showStatus('error', 'Please select an image file');
+        return;
+      }
+
+      selectedFile = file;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImage.src = e.target.result;
+        previewContainer.classList.add('active');
+        captureZone.style.display = 'none';
+        processBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Process image
+    processBtn.addEventListener('click', async () => {
+      if (!selectedFile) return;
+
+      processBtn.disabled = true;
+      showStatus('loading', 'Processing image...');
+
+      const formData = new FormData();
+      formData.append('image', selectedFile);
+      formData.append('book_title', document.getElementById('book-title').value);
+      formData.append('author', document.getElementById('author').value);
+      formData.append('chapter', document.getElementById('chapter').value);
+      formData.append('page_numbers', document.getElementById('page-numbers').value);
+      formData.append('category', categorySelect.value);
+      formData.append('tags', document.getElementById('tags').value);
+
+      try {
+        const res = await fetch(`${API_BASE}/api/capture`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          showStatus('success', `Captured! Category: ${data.category}, Confidence: ${data.ocr_confidence}%`);
+          resetBtn.style.display = 'block';
+          processBtn.style.display = 'none';
+        } else {
+          throw new Error(data.error || 'Processing failed');
+        }
+      } catch (err) {
+        showStatus('error', err.message);
+        processBtn.disabled = false;
+      }
+    });
+
+    // Reset
+    resetBtn.addEventListener('click', () => {
+      selectedFile = null;
+      previewContainer.classList.remove('active');
+      captureZone.style.display = 'block';
+      processBtn.style.display = 'block';
+      processBtn.disabled = true;
+      resetBtn.style.display = 'none';
+      statusDiv.classList.remove('active', 'success', 'error', 'loading');
+      fileInput.value = '';
+
+      // Clear form
+      document.getElementById('book-title').value = '';
+      document.getElementById('author').value = '';
+      document.getElementById('chapter').value = '';
+      document.getElementById('page-numbers').value = '';
+      document.getElementById('tags').value = '';
+      categorySelect.value = 'general';
+    });
+
+    // Status display
+    function showStatus(type, message) {
+      statusDiv.className = 'status active ' + type;
+      statusText.textContent = message;
+
+      if (type === 'loading') {
+        statusDiv.querySelector('.spinner').style.display = 'block';
+      } else {
+        statusDiv.querySelector('.spinner').style.display = 'none';
+      }
+    }
+
+    // Load stats
+    async function loadStats() {
+      try {
+        const res = await fetch(`${API_BASE}/api/stats`);
+        const stats = await res.json();
+
+        document.getElementById('stat-total').textContent = stats.total_entries;
+        document.getElementById('stat-pairs').textContent = stats.total_training_pairs;
+        document.getElementById('stat-quality').textContent = stats.avg_quality_score;
+        document.getElementById('stat-categories').textContent = Object.keys(stats.entries_by_category).length;
+      } catch (err) {
+        console.error('Failed to load stats:', err);
+      }
+    }
+
+    // Load entries
+    async function loadEntries() {
+      const category = filterCategory.value;
+      const url = category ? `${API_BASE}/api/entries?category=${category}` : `${API_BASE}/api/entries`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.entries && data.entries.length > 0) {
+          entryList.innerHTML = data.entries.map(entry => `
+            <div class="entry-card" onclick="openEntry('${entry.id}')">
+              <div class="entry-header">
+                <div class="entry-title">${entry.source_book_title || 'Untitled'}</div>
+                <div class="entry-category">${entry.category}</div>
+              </div>
+              <div class="entry-preview">${entry.preview}...</div>
+              <div class="entry-meta">
+                ${entry.source_chapter ? entry.source_chapter + ' | ' : ''}
+                Quality: ${Math.round(entry.quality_score)}%
+              </div>
+            </div>
+          `).join('');
+        } else {
+          entryList.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>No entries yet. Start capturing!</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error('Failed to load entries:', err);
+      }
+    }
+
+    // Filter change
+    filterCategory.addEventListener('change', loadEntries);
+
+    // Open entry detail
+    async function openEntry(id) {
+      currentEntryId = id;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/entries/${id}`);
+        const data = await res.json();
+
+        if (data.entry) {
+          const entry = data.entry;
+          modalTitle.textContent = entry.source_book_title || 'Entry Details';
+          modalBody.innerHTML = `
+            <div class="modal-section">
+              <div class="modal-section-title">Category</div>
+              <div class="tag">${entry.category}</div>
+            </div>
+
+            ${entry.topics && entry.topics.length ? `
+            <div class="modal-section">
+              <div class="modal-section-title">Topics</div>
+              <div class="tag-list">
+                ${entry.topics.map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            ${entry.tags && entry.tags.length ? `
+            <div class="modal-section">
+              <div class="modal-section-title">Tags</div>
+              <div class="tag-list">
+                ${entry.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            <div class="modal-section">
+              <div class="modal-section-title">Content</div>
+              <p style="white-space: pre-wrap; font-size: 13px; line-height: 1.6;">${entry.cleaned_text}</p>
+            </div>
+
+            <div class="modal-section">
+              <div class="modal-section-title">Metadata</div>
+              <p style="font-size: 12px; color: var(--text-secondary);">
+                ${entry.source_author ? `Author: ${entry.source_author}<br>` : ''}
+                ${entry.source_chapter ? `Chapter: ${entry.source_chapter}<br>` : ''}
+                ${entry.source_page_numbers ? `Pages: ${entry.source_page_numbers}<br>` : ''}
+                Quality Score: ${Math.round(entry.quality_score)}%<br>
+                OCR Confidence: ${Math.round(entry.ocr_confidence)}%
+              </p>
+            </div>
+          `;
+          modal.classList.add('active');
+        }
+      } catch (err) {
+        console.error('Failed to load entry:', err);
+      }
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      currentEntryId = null;
+    }
+
+    // Generate pairs for current entry
+    document.getElementById('generate-btn').addEventListener('click', async () => {
+      if (!currentEntryId) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/api/entries/${currentEntryId}/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pairs_count: 3 })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          alert(`Generated ${data.pairs.length} training pairs!`);
+          loadStats();
+        } else {
+          throw new Error(data.error);
+        }
+      } catch (err) {
+        alert('Failed to generate pairs: ' + err.message);
+      }
+    });
+
+    // Export format selection
+    document.querySelectorAll('.format-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedFormat = btn.dataset.format;
+      });
+    });
+
+    // Export
+    document.getElementById('export-btn').addEventListener('click', () => {
+      window.location.href = `${API_BASE}/api/export?format=${selectedFormat}`;
+    });
+
+    // Generate all pairs
+    document.getElementById('generate-all-btn').addEventListener('click', async () => {
+      alert('This would generate pairs for all entries. For now, generate per-entry from the Library.');
+    });
+
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+
+    // Initialize
+    loadCategories();
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((reg) => console.log('Service Worker registered'))
+        .catch((err) => console.log('Service Worker registration failed:', err));
+    }
+  </script>
+</body>
+</html>

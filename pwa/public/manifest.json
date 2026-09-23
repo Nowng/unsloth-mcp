@@ -1,0 +1,35 @@
+{
+  "name": "Knowledge Capture",
+  "short_name": "KnowCapture",
+  "description": "Capture book photos and build training datasets for AI fine-tuning",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#1a1a2e",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "education", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Capture",
+      "short_name": "Capture",
+      "description": "Capture a new book photo",
+      "url": "/?action=capture",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Library",
+      "short_name": "Library",
+      "description": "View captured knowledge",
+      "url": "/?action=library",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

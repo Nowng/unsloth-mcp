@@ -1,0 +1,42 @@
+{
+  "name": "unsloth-mcp",
+  "version": "2.3.0",
+  "description": "LM Studio Plugin for Unsloth - MCP tools for LLM fine-tuning, model optimization, and GPU management",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc && node scripts/copy-scripts.cjs && chmod +x dist/index.js",
+    "typecheck": "npx tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint \"src/**/*.ts\"",
+    "postinstall": "node scripts/setup.cjs",
+    "copy:scripts": "node scripts/copy-scripts.cjs"
+  },
+  "keywords": [
+    "unsloth",
+    "llm",
+    "fine-tuning",
+    "mcp",
+    "ai",
+    "lm-studio",
+    "plugin"
+  ],
+  "author": "hoonnowng",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@lmstudio/sdk": "^1.0.0",
+    "zod": "^3.0.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^30.2.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.8.10",
+    "eslint": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "typescript": "^5.2.2"
+  }
+}
