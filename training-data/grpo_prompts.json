@@ -1,0 +1,290 @@
+{
+  "metadata": {
+    "purpose": "GRPO training prompts for Coperniq sales agent",
+    "format": "Single prompts that model will generate responses to",
+    "note": "GRPO scores multiple responses per prompt using reward function",
+    "created": "2025-01-02",
+    "updated": "2025-01-02",
+    "categories": [
+      "objection_handling",
+      "discovery",
+      "qualification",
+      "closing",
+      "mep_specific",
+      "gong_real"
+    ],
+    "sources": ["sales_books", "gong_transcripts"]
+  },
+  "prompts": [
+    {
+      "prompt": "A prospect says 'Your software looks great but we've tried other systems before and they never stick with our field crews. What makes Coperniq different?'",
+      "category": "objection_handling",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "How should I qualify whether an MEP contractor is a good fit for Coperniq?",
+      "category": "qualification",
+      "difficulty": "easy"
+    },
+    {
+      "prompt": "The prospect says their current process works fine with spreadsheets and email. How do I create urgency?",
+      "category": "objection_handling",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "What questions should I ask in a discovery call with an HVAC contractor?",
+      "category": "discovery",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "Handle this objection: 'We're too busy right now to implement new software.'",
+      "category": "objection_handling",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "How do I identify who the real decision maker is at a mid-size plumbing company?",
+      "category": "qualification",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "The prospect is interested but wants to 'think about it.' What's my response?",
+      "category": "closing",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "Explain the ROI of Coperniq to an electrical contractor who does mostly commercial projects.",
+      "category": "mep_specific",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "What pain points do multi-trade MEP contractors typically face that Coperniq solves?",
+      "category": "discovery",
+      "difficulty": "easy"
+    },
+    {
+      "prompt": "How do I handle 'Your price is too high' when selling to a small HVAC company?",
+      "category": "objection_handling",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "What are the signs that a prospect is ready to buy?",
+      "category": "closing",
+      "difficulty": "easy"
+    },
+    {
+      "prompt": "A prospect asks for references from companies their size. How do I respond if we don't have a perfect match?",
+      "category": "objection_handling",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "How do I position Coperniq against ServiceTitan for mechanical contractors?",
+      "category": "mep_specific",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "The prospect's operations manager loves our product but the owner is skeptical. How do I handle this?",
+      "category": "closing",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "What's the best opening for a cold call to an MEP contractor?",
+      "category": "discovery",
+      "difficulty": "easy"
+    },
+    {
+      "prompt": "How do I follow up after a demo that went well but the prospect went silent?",
+      "category": "closing",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "Explain how Coperniq helps with job costing for plumbing contractors.",
+      "category": "mep_specific",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "The prospect wants to start with a pilot project. How should I structure this?",
+      "category": "closing",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "What questions reveal whether a contractor has budget allocated for software?",
+      "category": "qualification",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "How do I handle 'We need to involve our IT person' when they don't really have IT?",
+      "category": "objection_handling",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "What's the challenger sale approach for selling to contractors stuck in old habits?",
+      "category": "discovery",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "How do I create a sense of urgency without being pushy?",
+      "category": "closing",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "The prospect says they'll evaluate us next quarter. How do I keep momentum?",
+      "category": "closing",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "What's the best way to demonstrate Coperniq's mobile app value to field crews?",
+      "category": "mep_specific",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "How do I handle multiple stakeholders with different priorities in a sales cycle?",
+      "category": "qualification",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "Teach me how to use mirroring and labeling in sales conversations.",
+      "category": "discovery",
+      "difficulty": "medium"
+    },
+    {
+      "prompt": "What's the Jobs-to-be-Done framework and how do I apply it to MEP sales?",
+      "category": "discovery",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "How do I negotiate pricing without giving away too much?",
+      "category": "closing",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "The prospect compares us to a much cheaper competitor. What's my move?",
+      "category": "objection_handling",
+      "difficulty": "hard"
+    },
+    {
+      "prompt": "What are the most effective voicemail strategies for reaching contractors?",
+      "category": "discovery",
+      "difficulty": "easy"
+    },
+    {
+      "prompt": "A solar contractor says 'We run one commercial team and two residential teams. They help each other depending on work volume.' How do I discover their project management pain points?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "greenbox_intro"
+    },
+    {
+      "prompt": "The prospect mentions they use Google Sheets, Telegram, and a calendar to manage crews. How do I position Coperniq's dispatch feature?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "westtexas_intro"
+    },
+    {
+      "prompt": "A commercial solar consultant says 'We manage 120 million square feet for 70 clients with about 120 active projects. We tried you guys last year but you lacked capabilities.' How do I re-engage them?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "The prospect says 'We evaluated Coperniq and Sunbase last year. Sunbase had more capabilities but took 6 months to onboard and still isn't working.' How do I win them back?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "A contractor asks 'Can you show me what it looks like with multiple sites underneath a client? That's our gating issue.' How do I demo the hierarchy?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "The prospect says 'We use Salesforce for selling and built some project management capabilities but it's not designed for that. It's a band-aid solution.' How do I position Coperniq?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "A prospect mentions 'We have in-house installers and master electricians, but we also subcontract. Currently we bid 5-6 commercial opportunities monthly to gain 1-2.' How do I qualify them?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "matcon_intro"
+    },
+    {
+      "prompt": "The prospect asks 'Is this the only view for projects? Can it be shown in a Kanban board or a list or a map?' How do I handle feature limitation questions?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "firstchoice_discovery"
+    },
+    {
+      "prompt": "A prospect says 'We use Pipe Solar for proposals but not to manage projects. We want something to move projects from A to B to C efficiently and improve communication with customers.' What's my demo focus?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "firstchoice_discovery"
+    },
+    {
+      "prompt": "The prospect asks 'When a job is sold, we have NTP, initial milestone funded, send to bank stages. Can those be implemented? Is there a way to integrate Goodleap notifications?' How do I address financing workflow questions?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "firstchoice_discovery"
+    },
+    {
+      "prompt": "A VP says 'We need two things: an internal project tracking system for our team, and a client-facing portal where clients can see where their project is in the development cycle.' How do I structure the demo?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "The prospect mentions 'We're looking at Aurora for proposals because of accuracy concerns with our current tool.' How do I address integration questions?",
+      "category": "gong_real",
+      "difficulty": "easy",
+      "source": "firstchoice_discovery"
+    },
+    {
+      "prompt": "A contractor asks about pricing: 'What is it per user per account? And what is considered a project - does it count lead information or only actual projects?' How do I explain the pricing model?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "greenbox_intro"
+    },
+    {
+      "prompt": "The prospect says 'We've been cruising at the same volume for 2.5 years. Looking ahead, we want to grow but need efficiency improvements first.' How do I tie Coperniq to their growth plans?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "greenbox_intro"
+    },
+    {
+      "prompt": "A contractor mentions 'We looked at a monitoring solution recently but it's not cost effective. We still have systems from different manufacturers on different platforms.' How do I position universal hardware integration?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "greenbox_intro"
+    },
+    {
+      "prompt": "The prospect asks 'How long does implementation take from signing to being fully integrated and rolling?' What's the right way to set expectations?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "westtexas_intro"
+    },
+    {
+      "prompt": "A solar company owner says 'We have just one dedicated project manager and one office manager running all back office stuff. Pretty small team still.' How do I size the opportunity?",
+      "category": "gong_real",
+      "difficulty": "easy",
+      "source": "greenbox_intro"
+    },
+    {
+      "prompt": "The prospect is concerned: 'The pricing model made it really expensive last time. It was per project or per square foot. We have clients with 1000 buildings but most aren't active.' How do I address volume pricing?",
+      "category": "gong_real",
+      "difficulty": "hard",
+      "source": "solarkal_exploration"
+    },
+    {
+      "prompt": "A contractor asks 'For off-grid projects with no permitting or inspection, is it easy to skip those steps without creating a separate workflow?' How do I explain workflow flexibility?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "westtexas_intro"
+    },
+    {
+      "prompt": "The prospect mentions 'We use Site Capture for photos but the finance companies need specific pictures with customer name, address, and date. We're still extracting individual photos and making them presentable.' How do I position Coperniq's photo/form features?",
+      "category": "gong_real",
+      "difficulty": "medium",
+      "source": "westtexas_intro"
+    }
+  ]
+}

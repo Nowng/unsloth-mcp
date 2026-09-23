@@ -1,0 +1,116 @@
+# =============================================================================
+# GRPO Fine-Tuning Configuration
+# =============================================================================
+# This file is updated by Ralph Wiggum loop each iteration.
+# Track changes in experiments.md
+
+# Iteration tracking (Ralph updates this)
+iteration: 1
+status: "pending"  # pending, running, completed, failed
+
+# -----------------------------------------------------------------------------
+# Model Configuration
+# -----------------------------------------------------------------------------
+model:
+  name: "unsloth/Qwen2.5-3B-Instruct"
+  max_seq_length: 2048
+  load_in_4bit: true
+  dtype: null  # Auto-detect
+
+# -----------------------------------------------------------------------------
+# LoRA Configuration
+# -----------------------------------------------------------------------------
+lora:
+  r: 16              # Rank - start conservative
+  alpha: 16          # Scaling factor  
+  dropout: 0         # Unsloth recommendation
+  target_modules:
+    - "q_proj"
+    - "k_proj" 
+    - "v_proj"
+    - "o_proj"
+    - "gate_proj"
+    - "up_proj"
+    - "down_proj"
+
+# -----------------------------------------------------------------------------
+# GRPO Training Configuration
+# -----------------------------------------------------------------------------
+grpo:
+  # Core hyperparameters (iterate on these)
+  learning_rate: 2.0e-5      # GRPO uses lower LR than SFT
+  beta: 0.1                  # KL penalty coefficient
+  num_generations: 4         # Responses per prompt for comparison
+  max_completion_length: 256
+  
+  # Training settings
+  num_train_epochs: 1        # GRPO converges faster
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 8
+  
+  # Optimization
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+  optim: "adamw_8bit"
+  
+  # Precision
+  bf16: true
+  
+  # Logging
+  logging_steps: 5
+  save_steps: 50
+
+# -----------------------------------------------------------------------------
+# Reward Function Configuration
+# -----------------------------------------------------------------------------
+reward:
+  type: "multi_signal"  # multi_signal, classifier, or rule_based
+
+  # Signal weights (must sum to 1.0)
+  # Updated with Abdullah's Gong patterns analysis
+  weights:
+    length_appropriate: 0.10    # Not too short, not too long
+    keyword_coverage: 0.25      # Hits MEP/Coperniq/sales terms
+    structure_quality: 0.15     # Has clear structure (bullets, sections)
+    no_hallucination: 0.20      # Doesn't make stuff up
+    action_oriented: 0.15       # Contains actionable advice
+    sales_technique: 0.15       # Uses proven sales patterns
+
+  # Thresholds
+  min_length: 75               # Increased - short answers lack depth
+  max_length: 600              # Increased - allow detailed explanations
+  target_length: 250           # Increased - match Abdullah's demo style
+
+# -----------------------------------------------------------------------------
+# Evaluation Configuration
+# -----------------------------------------------------------------------------
+eval:
+  test_size: 50           # Held-out test prompts
+  metrics:
+    - "reward_mean"
+    - "reward_std"
+    - "keyword_accuracy"
+    - "length_compliance"
+  
+  # Success thresholds (Ralph checks these)
+  success_criteria:
+    reward_mean: 0.75     # Average reward > 0.75
+    keyword_accuracy: 0.80
+    length_compliance: 0.90
+
+# -----------------------------------------------------------------------------
+# Output Configuration
+# -----------------------------------------------------------------------------
+output:
+  dir: "grpo_experiments"
+  save_lora: true
+  save_gguf: true
+  gguf_quant: "q4_k_m"
+
+# -----------------------------------------------------------------------------
+# RunPod Configuration
+# -----------------------------------------------------------------------------
+runpod:
+  gpu_type: "RTX 4090"    # or "A100", "H100"
+  estimated_time_mins: 45
+  estimated_cost_usd: 2.50

@@ -1,0 +1,15 @@
+FROM ./coperniq-sales-q4km.gguf
+
+TEMPLATE """<|im_start|>system
+{{ .System }}<|im_end|>
+<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+{{ .Response }}<|im_end|>"""
+
+PARAMETER stop "<|im_end|>"
+PARAMETER stop "<|im_start|>"
+PARAMETER temperature 0.7
+PARAMETER num_ctx 2048
+
+SYSTEM """You are CopernIQ Sales Assistant, a helpful AI trained to write professional B2B sales emails for renewable energy solutions."""

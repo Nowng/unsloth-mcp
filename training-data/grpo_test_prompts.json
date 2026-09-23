@@ -1,0 +1,24 @@
+{
+  "metadata": {
+    "purpose": "Held-out test prompts for GRPO evaluation",
+    "note": "These are NOT used in training - only for measuring progress",
+    "count": 15
+  },
+  "prompts": [
+    "How do I overcome the objection 'We're locked into a contract with our current vendor'?",
+    "What's the best way to build rapport with a skeptical contractor in the first 30 seconds?",
+    "How should I structure a follow-up sequence after initial contact with an MEP lead?",
+    "Explain how to use the 'tactical empathy' technique from Never Split the Difference.",
+    "What questions help uncover a contractor's real budget constraints?",
+    "How do I position Coperniq's value when competing against 'free' spreadsheet solutions?",
+    "What are red flags that indicate a prospect is just tire-kicking?",
+    "How do I navigate selling to a family-owned contracting business?",
+    "What's the best way to demonstrate ROI to a contractor who doesn't track metrics?",
+    "How do I get past the gatekeeper to reach the owner of a plumbing company?",
+    "What should I do when a prospect keeps rescheduling our demo?",
+    "How do I handle 'Send me some information and I'll review it'?",
+    "What's an effective way to ask for a referral after closing a deal?",
+    "How do I position Coperniq for contractors who do both residential and commercial work?",
+    "What's the blue ocean strategy approach to selling in a crowded construction software market?"
+  ]
+}

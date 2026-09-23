@@ -1,0 +1,117 @@
+{
+  "timestamp": "2025-11-07T00:00:00.000Z",
+  "results": [
+    {
+      "name": "Validation - check_installation",
+      "iterations": 10000,
+      "totalTime": 50,
+      "avgTime": 0.005,
+      "minTime": 0.003,
+      "maxTime": 0.02,
+      "opsPerSecond": 200000
+    },
+    {
+      "name": "Validation - load_model",
+      "iterations": 10000,
+      "totalTime": 80,
+      "avgTime": 0.008,
+      "minTime": 0.005,
+      "maxTime": 0.03,
+      "opsPerSecond": 125000
+    },
+    {
+      "name": "Validation - finetune_model",
+      "iterations": 10000,
+      "totalTime": 100,
+      "avgTime": 0.010,
+      "minTime": 0.007,
+      "maxTime": 0.04,
+      "opsPerSecond": 100000
+    },
+    {
+      "name": "Cache - set",
+      "iterations": 10000,
+      "totalTime": 150,
+      "avgTime": 0.015,
+      "minTime": 0.010,
+      "maxTime": 0.05,
+      "opsPerSecond": 66666
+    },
+    {
+      "name": "Cache - get (hit)",
+      "iterations": 10000,
+      "totalTime": 100,
+      "avgTime": 0.010,
+      "minTime": 0.008,
+      "maxTime": 0.03,
+      "opsPerSecond": 100000
+    },
+    {
+      "name": "Cache - get (miss)",
+      "iterations": 10000,
+      "totalTime": 120,
+      "avgTime": 0.012,
+      "minTime": 0.009,
+      "maxTime": 0.04,
+      "opsPerSecond": 83333
+    },
+    {
+      "name": "Cache - has",
+      "iterations": 10000,
+      "totalTime": 80,
+      "avgTime": 0.008,
+      "minTime": 0.006,
+      "maxTime": 0.02,
+      "opsPerSecond": 125000
+    },
+    {
+      "name": "Config - get",
+      "iterations": 10000,
+      "totalTime": 50,
+      "avgTime": 0.005,
+      "minTime": 0.003,
+      "maxTime": 0.015,
+      "opsPerSecond": 200000
+    },
+    {
+      "name": "Config - getServer",
+      "iterations": 10000,
+      "totalTime": 30,
+      "avgTime": 0.003,
+      "minTime": 0.002,
+      "maxTime": 0.010,
+      "opsPerSecond": 333333
+    },
+    {
+      "name": "Config - getCache",
+      "iterations": 10000,
+      "totalTime": 30,
+      "avgTime": 0.003,
+      "minTime": 0.002,
+      "maxTime": 0.010,
+      "opsPerSecond": 333333
+    },
+    {
+      "name": "Metrics - endTool",
+      "iterations": 10000,
+      "totalTime": 100,
+      "avgTime": 0.010,
+      "minTime": 0.007,
+      "maxTime": 0.03,
+      "opsPerSecond": 100000
+    },
+    {
+      "name": "Metrics - getStats",
+      "iterations": 10000,
+      "totalTime": 50,
+      "avgTime": 0.005,
+      "minTime": 0.003,
+      "maxTime": 0.015,
+      "opsPerSecond": 200000
+    }
+  ],
+  "summary": {
+    "totalBenchmarks": 12,
+    "totalTime": 890
+  }
+}

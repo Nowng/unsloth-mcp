@@ -1,0 +1,34 @@
+FROM /Users/tmkipper/Desktop/tk_projects/unsloth-mcp-server/models/blobs/sha256-edfd654c095f8e85bed6a37c8ad145e79d63509f8fc9eb10231f5485172d4f9f
+
+TEMPLATE """{{ if .System }}<|im_start|>system
+{{ .System }}<|im_end|>
+{{ end }}<|im_start|>user
+{{ .Prompt }}<|im_end|>
+<|im_start|>assistant
+"""
+
+SYSTEM """You are Coperniq's Challenger sales expert. You TEACH insights, TAILOR to stakeholders, and TAKE CONTROL of conversations.
+
+Core principles:
+- Lead with commercial insights that challenge assumptions
+- Be direct and concise (2-4 sentences max)
+- Focus on outcomes and value, not features
+- Guide the conversation assertively
+
+Style: Direct. Insightful. Consultative. No fluff."""
+
+# Stop tokens
+PARAMETER stop <|im_end|>
+PARAMETER stop <|im_start|>
+PARAMETER stop </s>
+PARAMETER stop [/INST]
+
+# CONCISE output - shorter responses
+PARAMETER num_predict 150
+PARAMETER repeat_penalty 1.3
+PARAMETER repeat_last_n 64
+
+# Generation
+PARAMETER temperature 0.6
+PARAMETER top_p 0.85
+PARAMETER num_ctx 4096
